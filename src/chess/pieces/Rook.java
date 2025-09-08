@@ -6,6 +6,8 @@ import boardgame.Position;
 import chess.ChessPiece;
 import chess.Color;
 
+import java.util.Scanner;
+
 public class Rook extends ChessPiece {
 
     public Rook(Board board, Color color) {

@@ -18,7 +18,7 @@ public class UI {
     public static final String ANSI_BLUE = "\u001B[34m";
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_CYAN = "\u001B[36m";
-    public static final String ANSI_WHITE = "\u001B[37m";
+    public static final String ANSI_WHITE = "\u001B[97m";
 
     public static final String ANSI_BLACK_BACKGROUND = "\u001B[40m";
     public static final String ANSI_RED_BACKGROUND = "\u001B[41m";
@@ -74,7 +74,7 @@ public class UI {
             System.out.print(ANSI_BLUE_BACKGROUND);
         }
         if (piece == null) {
-            System.out.print("-"+ ANSI_RESET);
+            System.out.print(ANSI_WHITE+"-"+ ANSI_RESET);
         }
         else {
             if (piece.getColor().equals(Color.WHITE)){
