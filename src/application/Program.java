@@ -24,6 +24,15 @@ public class Program {
                // UI.printBoard(chessMatch.getPieces()); antes
                 UI.printMatch(chessMatch, captured);
                 System.out.println();
+
+                if (chessMatch.getCheckMate()) {
+                    System.out.println("CHECKMATE! GAME OVER!");
+                    System.out.println(chessMatch.getCurrentPlayer()+" WINS !!!");
+                    sc.nextLine();
+                    break;
+                }
+
+
                 System.out.print("Source: ");
                 ChessPosition source = UI.readChessPosition(sc);
 
@@ -44,6 +53,7 @@ public class Program {
                 System.out.println(e.getMessage());
                 sc.nextLine();
             }
+
         }
         //sc.close();
 
