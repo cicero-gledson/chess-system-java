@@ -9,9 +9,12 @@ public class Bishop extends ChessPiece {
     public Bishop(Board board, Color color) {
         super(board, color);
     }
-
     @Override
     public boolean[][] possibleMoves() {
+        return possibleMoves(position);
+    }
+
+    public boolean[][] possibleMoves(Position position) {
         boolean[][] mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
         Position p = new Position(0,0);
 

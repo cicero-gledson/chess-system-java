@@ -19,8 +19,7 @@ public class Rook extends ChessPiece {
         return "R";
     }
 
-    @Override
-    public boolean[][] possibleMoves() {
+    public boolean[][] possibleMoves(Position position){
         boolean[][] mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
         Position p = new Position(0,0);
 
@@ -65,6 +64,12 @@ public class Rook extends ChessPiece {
         }
 
         return mat;
+    }
+
+
+    @Override
+    public boolean[][] possibleMoves() {
+        return possibleMoves(position);
     }
 
 }
