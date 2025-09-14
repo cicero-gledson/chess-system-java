@@ -64,6 +64,30 @@ public class King extends ChessPiece {
         p.setColumn(p.getColumn()+1);
         if (getBoard().positionExists(p)) {mat[p.getRow()][p.getColumn()] = canMove(p);}
 
+        // rook
+        if (getMoveCount() == 0) {
+            ChessPiece sideQueenRook = (ChessPiece) getBoard().piece(position.getRow(), 0);
+            if (sideQueenRook != null && sideQueenRook.getMoveCount() == 0){
+                Position pq = new Position(position.getRow(), 3);
+                Position pb = new Position(position.getRow(), 2);
+                Position pn = new Position(position.getRow(), 1);
+                if (!getBoard().thereIsAPiece(pq) && !getBoard().thereIsAPiece(pb) && !getBoard().thereIsAPiece(pn)) {
+                    mat[position.getRow()][2] = true;
+                }
+            }
+
+            ChessPiece sideKingRook = (ChessPiece) getBoard().piece(position.getRow(), 7);
+            if (sideKingRook != null && sideKingRook.getMoveCount() == 0){
+                Position pb = new Position(position.getRow(), 5);
+                Position pn = new Position(position.getRow(), 6);
+                if (!getBoard().thereIsAPiece(pb) && !getBoard().thereIsAPiece(pn)) {
+                    mat[position.getRow()][6] = true;
+                }
+            }
+
+        }
+
+
         return mat;
 
 

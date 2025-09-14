@@ -63,9 +63,7 @@ public class ChessMatch {
         }
         return piece;
     }
-
-    private boolean testCheck(Color color){
-        Position kingPosition = king(color).getChessPosition().toPosition();
+    private boolean testCheck(Color color, Position kingPosition) {
         List<Piece> opponentPieces = piecesOnTheBoard.stream()
                 .filter(x -> ((ChessPiece)x).getColor() == opponent (color)).toList();
         for (Piece p: opponentPieces) {
@@ -73,6 +71,10 @@ public class ChessMatch {
                 return true;
         }
         return false;
+    }
+    private boolean testCheck(Color color){
+        Position kingPosition = king(color).getChessPosition().toPosition();
+        return testCheck(color, kingPosition);
     }
 
     private boolean testCheckMate(Color color){
@@ -98,8 +100,6 @@ public class ChessMatch {
 
     }
 
-
-
     public ChessPiece[][] getPieces(){
         ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
         for (int i=0; i<board.getRows(); i++){
@@ -124,10 +124,35 @@ public class ChessMatch {
         Position target = targetPosition.toPosition();
         validateSourcePosition(source);
         validateTargetPosition(source, target);
+        Position positionSourceRook = null;
+        Position positionTargetRook = null;
+
+        if (board.piece(source) instanceof King){
+            int deslocamento = source.getColumn() - target.getColumn();
+            if (Math.abs(deslocamento)  == 2) {
+                if (testCheck(currentPlayer))
+                    throw new ChessException("You can't castle when your king is in check");
+
+                int directionKing = -1; // left
+                if (deslocamento < 0)
+                    directionKing = 1;  // right
+
+                Position kingMoveSquare1 = new Position(source.getRow(), source.getColumn() + directionKing);
+                if (testCheck(currentPlayer, kingMoveSquare1))
+                    throw new ChessException("You can't castle through check");
+
+                positionSourceRook = new Position(source.getRow(), directionKing==1 ? 7 : 0);
+                positionTargetRook = new Position(source.getRow(), source.getColumn()+directionKing);
+                makeMove(positionSourceRook, positionTargetRook);
+            }
+        }
+
         Piece capturedPiece = makeMove(source, target);
 
         if (testCheck(currentPlayer)) {
             undoMove(source, target,capturedPiece);
+            if (positionSourceRook != null)
+                undoMove(positionSourceRook, positionTargetRook, null);
             throw new ChessException("You can´t put yourself in check");
         }
 
