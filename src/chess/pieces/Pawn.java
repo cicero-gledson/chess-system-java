@@ -10,8 +10,11 @@ import java.util.Arrays;
 
 public class Pawn extends ChessPiece {
 
-    public Pawn(Board board, Color color) {
+    private ChessMatch chessMatch;
+
+    public Pawn(Board board, Color color, ChessMatch chessMatch) {
         super(board, color);
+        this.chessMatch = chessMatch;
     }
 
 
@@ -38,6 +41,16 @@ public class Pawn extends ChessPiece {
         if (getBoard().positionExists(p) && isThereOpponentPiece(p))
             mat[p.getRow()][p.getColumn()] = true;
 
+        // enPassant
+        ChessPiece enPassantVulnerable = chessMatch.getEnPassantVulnerable();
+        if (enPassantVulnerable != null && enPassantVulnerable.getChessPosition() != null) {
+            Position enPassantVulnerablePosition  = enPassantVulnerable.getChessPosition().toPosition();
+            if (enPassantVulnerablePosition.getRow() == position.getRow()
+                    && Math.abs(enPassantVulnerablePosition.getColumn() - position.getColumn()) == 1){
+                mat[enPassantVulnerablePosition.getRow() + pieceStep][enPassantVulnerablePosition.getColumn()] = true;
+
+            }
+        }
         return mat;
     }
 

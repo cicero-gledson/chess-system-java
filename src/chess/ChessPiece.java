@@ -22,7 +22,9 @@ public abstract class ChessPiece extends Piece {
     public void decreaseMoveCount(){moveCount--;}
 
     public ChessPosition getChessPosition() {
-        return ChessPosition.fromPosition(position);
+        if (position!=null)
+            return ChessPosition.fromPosition(position);
+        return null;
     }
 
     protected boolean isThereOpponentPiece(Position position){
