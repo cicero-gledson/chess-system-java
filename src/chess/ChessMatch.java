@@ -10,6 +10,7 @@ import javax.xml.transform.Source;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ScheduledExecutorService;
 
 import static java.util.stream.Collectors.toList;
 
@@ -22,6 +23,7 @@ public class ChessMatch {
     private boolean check;
     private boolean checkMate;
     private ChessPiece enPassantVulnerable;
+    private ChessPiece promoted;
 
     public ChessMatch() {
         board = new Board(8, 8);
@@ -32,6 +34,10 @@ public class ChessMatch {
 
     public int getTurn(){
        return turn;
+    }
+
+    public ChessPiece getPromoted() {
+        return promoted;
     }
 
     public ChessPiece getEnPassantVulnerable() {
@@ -174,14 +180,14 @@ public class ChessMatch {
             }
         }
 
-
-
         if (testCheck(currentPlayer)) {
             undoMove(source, target, capturedPiece, posEnPassantCaptured);
             if (positionSourceRook != null)
                 undoMove(positionSourceRook, positionTargetRook, null, null);
             throw new ChessException("You can´t put yourself in check");
         }
+
+
 
         check = testCheck(opponent(currentPlayer));
         checkMate = testCheckMate(opponent(currentPlayer));
@@ -192,13 +198,38 @@ public class ChessMatch {
             int deslocamento = source.getRow() - target.getRow();
             if (Math.abs(deslocamento) == 2)
                 enPassantVulnerable = chessPieceMove;
-            else
+            else {
                 enPassantVulnerable = null;
+                if (target.getRow() == 7 || target.getRow() ==0)
+                    promoted = chessPieceMove;
+            }
+
         }
 
-
-
         return (ChessPiece) capturedPiece;
+    }
+
+    public void changePromoted(String changeTo){
+        changeTo = changeTo.substring(0,1).toLowerCase();
+        ChessPiece newPiece = switch (changeTo) {
+            case "q" -> new Queen(board, promoted.getColor());
+            case "r" -> new Rook(board, promoted.getColor());
+            case "n" -> new Knight(board, promoted.getColor());
+            case "b" -> new Bishop(board, promoted.getColor());
+            default -> null;
+        };
+        if (newPiece != null) {
+            Position pos = promoted.getChessPosition().toPosition();
+
+            board.removePiece(pos);
+            piecesOnTheBoard.remove(promoted);
+            board.placePiece(newPiece, pos);
+            piecesOnTheBoard.add(newPiece);
+            promoted = null;
+            check = testCheck(opponent(newPiece.getColor()));
+            checkMate = testCheckMate(opponent(newPiece.getColor()));
+
+        }
     }
 
     private void validateTargetPosition(Position source, Position target) {
